@@ -40,3 +40,4 @@ public class BoardController {
         boardService.deleteBoard(boardId);
     }
 }
+
