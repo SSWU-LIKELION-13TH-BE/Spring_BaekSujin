@@ -1,5 +1,6 @@
 package org.example.session3.entitiy;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -50,4 +53,8 @@ public class Board {
     public void setPostDate(LocalDate postDate) {
         this.postDate = postDate;
     }
+
+    @OneToMany(mappedBy = "board", cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
+    @JsonManagedReference  // 양방향 매핑 시, 무한 순환 문제를 피하게 해주는 어노테이션
+    private List<Comment> comments = new ArrayList<>();
 }
