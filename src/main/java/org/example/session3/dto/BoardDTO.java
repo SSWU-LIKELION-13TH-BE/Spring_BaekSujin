@@ -17,4 +17,6 @@ public class BoardDTO {
     private String content;
     private String writer;
     private Date postDate;
+
+    private MultipartFile image;
 }
