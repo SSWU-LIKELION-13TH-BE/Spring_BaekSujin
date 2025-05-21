@@ -106,4 +106,9 @@ public class BoardService {
                 .build();
     }
 
+    @Transactional
+    public void deleteUpload(Long boardId) {
+        boardRepository.deleteByBoardId(boardId);
+    }
+
 }

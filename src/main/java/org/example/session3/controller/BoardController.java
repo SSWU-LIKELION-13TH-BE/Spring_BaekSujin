@@ -82,4 +82,8 @@ public class BoardController {
 //    }
 
 
+    @DeleteMapping("/deleteUpload/{boardId}")
+    public void deleteUpload(@PathVariable(name = "boardId") Long boardId) {
+        boardService.deleteBoard(boardId);
+    }
 }
