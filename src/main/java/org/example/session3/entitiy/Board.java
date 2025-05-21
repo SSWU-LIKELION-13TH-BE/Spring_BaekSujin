@@ -33,15 +33,17 @@ public class Board {
     @Column(length = 15, nullable = false)
     private String writer;
 
-    // 날짜만 표시 시간 X
-    private LocalDate postDate;
+    @Builder.Default
+    private LocalDate postDate = LocalDate.now();
 
     @Column
     private String image;
 
-    @PrePersist // jpa의 콜백 메서드 엔티티가 처음 저장되기 직전에 실행 즉 새로운 row 생성시 현재 날짜 저장
+    @PrePersist
     protected void onCreate() {
-        this.postDate = LocalDate.now();
+        if (this.postDate == null) {
+            this.postDate = LocalDate.now();
+        }
     }
 
     public void setTitle(String title) {

@@ -1,6 +1,9 @@
 package org.example.session3.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.session3.dto.BoardDTO;
+import org.example.session3.entitiy.Board;
+import org.example.session3.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,8 +11,10 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,6 +23,7 @@ public class S3Service {
 
     //  s3Client 주입 aws 에서 제공하는 객체 S3에 파일을 업로드하거나 다운로드할때 사용
     private final S3Client s3Client;
+    private final BoardRepository boardRepository;
 
     //  버킷이름
     @Value("${cloud.aws.s3.bucket-name}")
@@ -42,5 +48,8 @@ public class S3Service {
 
         return s3Client.utilities().getUrl(request).toString(); // 업로드된 파일 주소 리턴
     }
+
+
+
 }
 

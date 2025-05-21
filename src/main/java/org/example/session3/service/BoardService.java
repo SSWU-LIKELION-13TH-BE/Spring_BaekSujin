@@ -8,6 +8,7 @@ import org.example.session3.dto.BoardDTO;
 import org.example.session3.entitiy.Board;
 import org.example.session3.repository.BoardRepository;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -87,4 +88,22 @@ public class BoardService {
         boardRepository.save(board);
 
     }
+
+    // ID로 게시글 조회
+    public BoardDTO getUpload(Long boardId) {
+        Optional<Board> optionalBoard = boardRepository.findById(boardId);
+        if (optionalBoard.isEmpty()) {
+            return null;
+        }
+        Board board = optionalBoard.get();
+
+        return BoardDTO.builder()
+                .boardId(board.getBoardId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .writer(board.getWriter())
+                .imageUrl(board.getImage())
+                .build();
+    }
+
 }

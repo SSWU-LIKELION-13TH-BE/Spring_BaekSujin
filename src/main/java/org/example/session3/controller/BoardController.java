@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.session3.dto.BoardDTO;
 import org.example.session3.entitiy.Board;
 import org.example.session3.service.BoardService;
+import org.example.session3.service.S3Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class BoardController {
 
     private final BoardService boardService;
+    private final S3Service s3Service;
 
     @GetMapping("/getBoard")
     public Optional<Board> getBoard(@RequestParam(name = "boardId") Long boardId) {
@@ -63,6 +65,21 @@ public class BoardController {
             return ResponseEntity.status(400).build();
         }
     }
+
+    @GetMapping("/getUpload")
+    public BoardDTO getUpload(@RequestParam(name="boardId") Long boardId) {
+        return boardService.getUpload(boardId);
+    }
+
+    // 게시글 조회
+//    @GetMapping("/getUpload")
+//    public ResponseEntity<BoardDTO> getUpload(@PathVariable Long boardId) {
+//        BoardDTO dto = s3Service.getBoardById(boardId);
+//        if (dto == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        return ResponseEntity.ok(dto);
+//    }
 
 
 }
