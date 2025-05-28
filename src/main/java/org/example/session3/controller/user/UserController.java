@@ -1,5 +1,7 @@
 package org.example.session3.controller.user;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.example.session3.dto.user.request.PasswordChangeRequestDto;
 import org.example.session3.dto.user.request.UserLoginRequestDTO;
 import org.example.session3.dto.user.request.UserSignupRequestDTO;
 import org.example.session3.dto.user.response.UserInfoResponseDto;
@@ -54,5 +56,29 @@ public class UserController {
                 user.getProfileImage()
         ));
     }
+
+    @PostMapping("/password")
+    public ResponseEntity<String> changePassword(
+            @RequestBody PasswordChangeRequestDto requestDto,
+            @RequestHeader("Authorization") String authHeader) {
+
+        String token = authHeader.replace("Bearer ", "");
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
+        }
+
+        String userId = jwtTokenProvider.getUserId(token);
+
+        try {
+            userService.changePassword(userId, requestDto);
+            return ResponseEntity.ok("비밀번호 변경 완료!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
+
 }
 

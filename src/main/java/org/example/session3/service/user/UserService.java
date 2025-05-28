@@ -1,5 +1,6 @@
 package org.example.session3.service.user;
 
+import org.example.session3.dto.user.request.PasswordChangeRequestDto;
 import org.example.session3.dto.user.request.UserLoginRequestDTO;
 import org.example.session3.dto.user.request.UserSignupRequestDTO;
 import org.example.session3.dto.user.response.UserLoginResponseDTO;
@@ -64,6 +65,26 @@ public class UserService implements UserDetailsService {
     public User findByUserId(String userId) {
         return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 아이디의 사용자가 없습니다. : " + userId));
+    }
+
+    // 비밀번호 변경
+    public void changePassword(String userId, PasswordChangeRequestDto requestDto) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+
+        // 기존 비밀번호 확인
+        if (!passwordEncoder.matches(requestDto.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("기존 비밀번호와 일치하지 않습니다.");
+        }
+
+        // 변경할 비밀번호가 일치하는지 확인
+        if (!requestDto.getNewPassword().equals(requestDto.getNewPasswordCheck())) {
+            throw new IllegalArgumentException("새 비밀번호가 일치하지 않습니다.");
+        }
+
+        // 새 비밀번호 변경
+        user.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
+        userRepository.save(user);
     }
 }
 
