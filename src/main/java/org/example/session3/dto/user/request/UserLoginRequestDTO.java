@@ -1,10 +1,11 @@
 package org.example.session3.dto.user.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 //로그인 요청 DTO
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class UserLoginRequestDTO {
     private String userId;
