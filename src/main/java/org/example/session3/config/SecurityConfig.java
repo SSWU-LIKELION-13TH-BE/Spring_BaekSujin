@@ -37,7 +37,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // 세션 기반 비활성화 (우리는 토큰 기반이니까)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/**", "/api/calculator/**").permitAll()
+                        .requestMatchers("/api/users/**", "/test/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider, userDetailsService), UsernamePasswordAuthenticationFilter.class);  // UserDetailsService 사용
