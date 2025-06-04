@@ -3,6 +3,7 @@ package org.example.session3.apiPayload.exception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.example.session3.apiPayload.code.BaseErrorCode;
+import org.example.session3.apiPayload.code.ErrorStatus;
 import org.example.session3.apiPayload.dto.ErrorReasonDTO;
 
 @Getter
@@ -16,3 +17,4 @@ public class GeneralException extends RuntimeException {
         return this.code.getReasonHttpStatus();
     }
 }
+

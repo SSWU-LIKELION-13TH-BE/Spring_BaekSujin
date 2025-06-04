@@ -1,10 +1,15 @@
 package org.example.session3.service.user;
 
+import org.example.session3.apiPayload.code.ErrorStatus;
+import org.example.session3.apiPayload.code.SuccessStatus;
+import org.example.session3.apiPayload.dto.ApiResponse;
+import org.example.session3.apiPayload.exception.GeneralException;
 import org.example.session3.dto.user.request.PasswordChangeRequestDto;
 import org.example.session3.dto.user.request.UserLoginRequestDTO;
 import org.example.session3.dto.user.request.UserSignupRequestDTO;
 import org.example.session3.dto.user.response.UserLoginResponseDTO;
 import org.example.session3.entitiy.user.User;
+import org.example.session3.hw9.dto.Hw9RequestDto;
 import org.example.session3.repository.user.UserRepository;
 import org.example.session3.security.JwtTokenProvider;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +43,7 @@ public class UserService implements UserDetailsService {
         user.setProfileImage(requestDto.getProfileImage());
         userRepository.save(user);
     }
+
     // 🔐 로그인 (ID/PW 검증 후 JWT 발급)
     public UserLoginResponseDTO login(UserLoginRequestDTO requestDto) {
         User user = userRepository.findByUserId(requestDto.getUserId())
@@ -48,6 +54,7 @@ public class UserService implements UserDetailsService {
         String token = jwtTokenProvider.createToken(user.getUserId());
         return new UserLoginResponseDTO(user.getUserId(), token);
     }
+
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         User user = userRepository.findByUserId(userId)
@@ -68,23 +75,25 @@ public class UserService implements UserDetailsService {
     }
 
     // 비밀번호 변경
-    public void changePassword(String userId, PasswordChangeRequestDto requestDto) {
+    public ApiResponse<String> changePassword(String userId, PasswordChangeRequestDto requestDto) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
         // 기존 비밀번호 확인
         if (!passwordEncoder.matches(requestDto.getCurrentPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("기존 비밀번호와 일치하지 않습니다.");
+            throw new GeneralException(ErrorStatus.PASSWORD_MISMATCH);
         }
 
         // 변경할 비밀번호가 일치하는지 확인
         if (!requestDto.getNewPassword().equals(requestDto.getNewPasswordCheck())) {
-            throw new IllegalArgumentException("새 비밀번호가 일치하지 않습니다.");
+            throw new GeneralException(ErrorStatus.PASSWORD_CONFIRM_MISMATCH);
         }
 
         // 새 비밀번호 변경
         user.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
         userRepository.save(user);
+
+        return ApiResponse.of(SuccessStatus._OK, "비밀번호 변경 완료!");
     }
 }
 

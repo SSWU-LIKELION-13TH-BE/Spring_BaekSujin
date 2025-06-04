@@ -1,6 +1,10 @@
 package org.example.session3.controller.user;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import org.example.session3.apiPayload.code.SuccessStatus;
+import org.example.session3.apiPayload.dto.ApiResponse;
+import org.example.session3.apiPayload.exception.GeneralException;
 import org.example.session3.dto.user.request.PasswordChangeRequestDto;
 import org.example.session3.dto.user.request.UserLoginRequestDTO;
 import org.example.session3.dto.user.request.UserSignupRequestDTO;
@@ -58,27 +62,31 @@ public class UserController {
     }
 
     @PostMapping("/password")
-    public ResponseEntity<String> changePassword(
-            @RequestBody PasswordChangeRequestDto requestDto,
+    public ApiResponse<?> changePassword(
+            @RequestBody @Valid PasswordChangeRequestDto requestDto,
             @RequestHeader("Authorization") String authHeader) {
 
         String token = authHeader.replace("Bearer ", "");
 
+        // 토큰 유효성 검사
         if (!jwtTokenProvider.validateToken(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
+            return ApiResponse.onFailure("401", "유효하지 않은 토큰입니다.", "") ;
         }
 
         String userId = jwtTokenProvider.getUserId(token);
 
-        try {
-            userService.changePassword(userId, requestDto);
-            return ResponseEntity.ok("비밀번호 변경 완료!");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
+        userService.changePassword(userId, requestDto);
+            return ApiResponse.of(SuccessStatus._OK, "비밀번호 변경!");
+//        } catch (IllegalArgumentException e) {
+//            return ApiResponse.onFailure("400", e.getMessage(), "");
+//        } catch (GeneralException e) {
+//            return ApiResponse.onFailure(
+//                            e.getErrorStatus().getCode(),
+//                            e.getErrorStatus().getMessage(),
+//                            "");
+//        }
+    }
     }
 
 
-}
 
