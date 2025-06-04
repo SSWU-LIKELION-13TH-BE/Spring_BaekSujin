@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
@@ -22,6 +24,8 @@ public class User {
     @Column(name = "user_id", length = 20, nullable = false, unique = true)
     private String userId; // 아이디
 
+    @NotBlank
+    @Size(min=8)
     @Column(name = "password", length = 255, nullable = false)
     private String password; // 비밀번호
 

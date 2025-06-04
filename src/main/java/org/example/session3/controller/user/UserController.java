@@ -68,25 +68,15 @@ public class UserController {
 
         String token = authHeader.replace("Bearer ", "");
 
-        // 토큰 유효성 검사
         if (!jwtTokenProvider.validateToken(token)) {
-            return ApiResponse.onFailure("401", "유효하지 않은 토큰입니다.", "") ;
+            return ApiResponse.onFailure("401", "유효하지 않은 토큰입니다.", "");
         }
 
         String userId = jwtTokenProvider.getUserId(token);
-
         userService.changePassword(userId, requestDto);
-            return ApiResponse.of(SuccessStatus._OK, "비밀번호 변경!");
-//        } catch (IllegalArgumentException e) {
-//            return ApiResponse.onFailure("400", e.getMessage(), "");
-//        } catch (GeneralException e) {
-//            return ApiResponse.onFailure(
-//                            e.getErrorStatus().getCode(),
-//                            e.getErrorStatus().getMessage(),
-//                            "");
-//        }
+        return ApiResponse.of(SuccessStatus._OK, "비밀번호 변경!");
     }
-    }
+}
 
 
 
