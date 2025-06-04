@@ -1,8 +1,11 @@
 package org.example.session3.dto.user.request;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserSignupRequestDTO {
     private String userId;
     private String password;
